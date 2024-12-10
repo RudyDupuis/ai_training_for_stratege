@@ -1,68 +1,57 @@
-from game_logic.classes.GameState import GameState
-from game_logic.enums.PlayerRole import PlayerRole
-from game_logic.utils.initial_board import initial_board
-from game_logic.ai_formatting.formatting_game_data_for_ai import (
-    formatting_game_data_for_ai,
-)
-from game_logic.ai_formatting.formatting_possible_actions_for_ai import (
-    formatting_possible_actions_for_ai,
-)
-from game_logic.ai_formatting.do_action import do_action
-from game_logic import display_board
-from ai_training.agent import Agent
 import os
+from game_logic.classes.game_state import GameState
+from game_logic.enums.player_role import PlayerRole
+from game_logic.game_state_methods.initial_board import initial_board
+from game_logic.mappers.board_and_actions_data_to_state_matrice_and_actions_matrice import (
+    board_infos_data_to_state_matrice,
+    actions_to_actions_matrice,
+)
+from game_logic.actions.do_action import do_action
+from game_logic.displays.display_board import display_board
+from ai_training.calculate_reward import calculate_reward
+from ai_training.agent import Agent
 
 
 def train_agents(num_episodes=1000):
-    # Initialisation des agents
-    agent1 = Agent(name="Agent1", player_role=PlayerRole.Player1)
-    agent2 = Agent(name="Agent2", player_role=PlayerRole.Player2)
+    agent1 = Agent(name="Agent1", player_role=PlayerRole.PLAYER1)
+    agent2 = Agent(name="Agent2", player_role=PlayerRole.PLAYER2)
 
     if not os.path.exists("saved_model/"):
         os.makedirs("saved_model/")
 
-    # Boucle de jeu
     for episode in range(num_episodes):
-        gameState = GameState(1, initial_board())
+        game_state = GameState(1, initial_board())
         done = False
 
         while not done:
-            current_player = gameState.determinePlayerBasedOnTurn()
-            current_agent = agent1 if current_player == PlayerRole.Player1 else agent2
+            current_player = game_state.determine_player_based_on_turn()
+            current_agent = agent1 if current_player == PlayerRole.PLAYER1 else agent2
 
-            # Obtention de l'état du jeu et des actions possibles
-            state = formatting_game_data_for_ai(gameState)
-            possible_actions = formatting_possible_actions_for_ai(
-                gameState, current_player
-            )
+            state = board_infos_data_to_state_matrice(game_state)
+            possible_actions = actions_to_actions_matrice(game_state, current_player)
 
-            # Choisir une action
-            action = current_agent.choose_action(state, possible_actions)
+            choosen_action = current_agent.choose_action(state, possible_actions)
+            do_action(choosen_action, game_state, current_player)
 
-            # Effectuer l'action
-            do_action(action, gameState, current_player)
+            reward = calculate_reward(choosen_action, game_state, current_player)
 
-            # Vérification de la fin de la partie
-            if gameState.winner:
+            if game_state.winner:
                 done = True
-                reward = (
-                    1 if gameState.winner == current_player else -1
-                )  # Récompense selon le gagnant
-            else:
-                reward = 0  # Pas de fin de partie
 
-            # Obtenir le prochain état et les actions possibles
-            next_state = formatting_game_data_for_ai(gameState)
-            next_possible_actions = formatting_possible_actions_for_ai(
-                gameState, current_player
+            next_state = board_infos_data_to_state_matrice(game_state)
+            next_possible_actions = actions_to_actions_matrice(
+                game_state, current_player
             )
 
-            # Entraîner l'agent avec l'état courant, l'action et la récompense
-            current_agent.train(state, action, reward, next_state, next_possible_actions)
+            current_agent.train(
+                state, choosen_action, reward, next_state, next_possible_actions
+            )
 
-            # Afficher l'état du jeu
-            display_board(gameState)
+            display_board(game_state)
 
-        agent1.model.save(f"saved_model/agent1_{episode}.h5")
-        agent2.model.save(f"saved_model/agent2_{episode}.h5")
         print(f"Épisode {episode} terminé.")
+
+        if episode % 100 == 0:
+            agent1.model.export(f"saved_model/{episode}_agent1")
+            agent2.model.export(f"saved_model/{episode}_agent2")
+

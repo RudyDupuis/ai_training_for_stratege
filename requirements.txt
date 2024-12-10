@@ -1,7 +1,5 @@
 tensorflow
+tensorflowjs
 numpy
-pandas
-matplotlib
-gym
 pylint
 black

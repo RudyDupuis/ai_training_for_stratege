@@ -3,4 +3,4 @@ def calculate_pawn_remaining_moves(pawn, desired_pawn_position):
         pawn.position.col - desired_pawn_position.col
     )
 
-    pawn.remainingMove -= move_distance
+    pawn.remaining_move -= move_distance

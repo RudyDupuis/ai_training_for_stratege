@@ -1,0 +1,138 @@
+from game_logic.classes.pawn import Pawn
+from game_logic.classes.game_state import GameState
+from game_logic.classes.pawn_position import PawnPosition
+from game_logic.enums.player_role import PlayerRole
+from game_logic.enums.orientation import Orientation
+
+
+def initial_board():
+    return [
+        Pawn(
+            "p2-1",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(0, 2),
+        ),
+        Pawn(
+            "p2-2",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(0, 3),
+        ),
+        Pawn(
+            "p2-3",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(0, 4),
+        ),
+        Pawn(
+            "p2-4",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(0, 5),
+        ),
+        Pawn(
+            "p2-5",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(1, 2),
+        ),
+        Pawn(
+            "p2-6",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(1, 3),
+        ),
+        Pawn(
+            "p2-7",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(1, 4),
+        ),
+        Pawn(
+            "p2-8",
+            PlayerRole.PLAYER2,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.SE,
+            PawnPosition(1, 5),
+        ),
+        Pawn(
+            "p1-1",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(6, 2),
+        ),
+        Pawn(
+            "p1-2",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(6, 3),
+        ),
+        Pawn(
+            "p1-3",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(6, 4),
+        ),
+        Pawn(
+            "p1-4",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(6, 5),
+        ),
+        Pawn(
+            "p1-5",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(7, 2),
+        ),
+        Pawn(
+            "p1-6",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(7, 3),
+        ),
+        Pawn(
+            "p1-7",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(7, 4),
+        ),
+        Pawn(
+            "p1-8",
+            PlayerRole.PLAYER1,
+            True,
+            GameState.MAX_PAWN_MOVEMENT,
+            Orientation.NW,
+            PawnPosition(7, 5),
+        ),
+    ]
