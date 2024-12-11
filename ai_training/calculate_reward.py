@@ -4,41 +4,54 @@ from game_logic.mappers.action_matrice_to_action_infos import (
     action_matrice_to_action_infos,
 )
 
+REWARD_FOR_KILL = 10
+REWARD_FOR_PUSH = 0.5
+REWARD_FOR_PULL = 0.5
+REWARD_FOR_MOVE = 0.2
+PENALTY_FOR_ROTATE = -0.5
+PENALTY_PER_TURN = -0.1
+REWARD_FOR_VICTORY = 25
+REWARD_PER_CAPTURED_PAWN = 1
+
 
 def calculate_reward(choosen_action, game_state, current_player):
     action_info = action_matrice_to_action_infos(choosen_action, game_state)
 
     reward = 0
-
-    # Penalty for the duration of the game
-    reward -= 0.1
+    reward += PENALTY_PER_TURN
 
     if action_info["action"] == Action.KILL:
-        reward += 10
+        reward += REWARD_FOR_KILL
 
     if action_info["action"] == Action.PUSH:
-        reward += 0.5
+        reward += REWARD_FOR_PUSH
 
     if action_info["action"] == Action.PULL:
-        reward += 0.5
+        reward += REWARD_FOR_PULL
+
+    if action_info["action"] == Action.MOVE:
+        reward += REWARD_FOR_MOVE
 
     if action_info["action"] == Action.ROTATE:
-        reward -= 0.5
+        reward += PENALTY_FOR_ROTATE
 
-    # Bonus if the agent has more pawns
+    lost_pawns = game_state.determine_players_lost_pawns()
+    player1_captured = len(lost_pawns["player2s_lost_pawns"])
+    player2_captured = len(lost_pawns["player1s_lost_pawns"])
+
     if current_player == PlayerRole.PLAYER1:
-        if len(game_state.determine_players_lost_pawns()["player1s_lost_pawns"]) < len(
-            game_state.determine_players_lost_pawns()["player2s_lost_pawns"]
-        ):
-            reward += 1
+        reward += player1_captured * REWARD_PER_CAPTURED_PAWN
+        reward -= player2_captured * REWARD_PER_CAPTURED_PAWN
     if current_player == PlayerRole.PLAYER2:
-        if len(game_state.determine_players_lost_pawns()["player2s_lost_pawns"]) < len(
-            game_state.determine_players_lost_pawns()["player1s_lost_pawns"]
-        ):
-            reward += 1
+        reward += player2_captured * REWARD_PER_CAPTURED_PAWN
+        reward -= player1_captured * REWARD_PER_CAPTURED_PAWN
 
     if game_state.winner:
-        reward += 50 if game_state.winner == current_player else -50
+        reward += (
+            REWARD_FOR_VICTORY
+            if game_state.winner == current_player
+            else -REWARD_FOR_VICTORY
+        )
 
     print(f"Récompense: {reward}")
 

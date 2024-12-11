@@ -1,15 +1,23 @@
+import os
 import random
 import tensorflow as tf
 import numpy as np
 
+LEARNING_RATE = 0.001
+EPSILON = 0.15
+GAMMA = 0.9
+
 
 class Agent:
-    def __init__(self, name, player_role):
+    def __init__(self, name, player_role, model_path=None):
         self.name = name
         self.player_role = player_role
-        self.model = self.build_model()
-        self.epsilon = 0.2
-        self.gamma = 0.9
+
+        if model_path and os.path.exists(model_path):
+            self.model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
+            print(f"Modèle chargé depuis {model_path}")
+        else:
+            self.model = self.build_model()
 
     def build_model(self):
         model = tf.keras.models.Sequential(
@@ -20,8 +28,8 @@ class Agent:
             ]
         )
         model.compile(
-            optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
-            loss="mse",
+            optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE),
+            loss=tf.keras.losses.MeanSquaredError(),
         )
         return model
 
@@ -33,7 +41,7 @@ class Agent:
     def train(self, state, action, reward, next_state, possible_actions):
         next_q_values = self.predict(next_state, possible_actions)
         max_next_q_value = np.max(next_q_values)
-        target = reward + self.gamma * max_next_q_value
+        target = reward + GAMMA * max_next_q_value
 
         input_data = np.array([np.concatenate((state, action))])
         target_data = np.array([target])
@@ -42,7 +50,7 @@ class Agent:
         return loss
 
     def choose_action(self, state, possible_actions):
-        if random.random() < self.epsilon:
+        if random.random() < EPSILON:
             return random.choice(possible_actions)
 
         q_values = self.predict(state, possible_actions)

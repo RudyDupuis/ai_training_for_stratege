@@ -13,8 +13,12 @@ from ai_training.agent import Agent
 
 
 def train_agents(num_episodes=1000):
-    agent1 = Agent(name="Agent1", player_role=PlayerRole.PLAYER1)
-    agent2 = Agent(name="Agent2", player_role=PlayerRole.PLAYER2)
+    agent1 = Agent(
+        name="Agent1", player_role=PlayerRole.PLAYER1, model_path="h5/0_agent1"
+    )
+    agent2 = Agent(
+        name="Agent2", player_role=PlayerRole.PLAYER2, model_path="h5/0_agent2"
+    )
 
     if not os.path.exists("saved_model/"):
         os.makedirs("saved_model/")
@@ -51,7 +55,8 @@ def train_agents(num_episodes=1000):
 
         print(f"Épisode {episode} terminé.")
 
-        if episode % 100 == 0:
-            agent1.model.export(f"saved_model/{episode}_agent1")
-            agent2.model.export(f"saved_model/{episode}_agent2")
+        if episode % 10 == 0:
+            agent1.model.save(f"h5/{episode}_agent1.h5")
+            agent2.model.save(f"h5/{episode}_agent2.h5")
 
+            agent2.model.export(f"saved_model/{episode}_agent2")
