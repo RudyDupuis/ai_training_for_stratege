@@ -24,6 +24,7 @@ def train_agents(num_episodes, start_episode=0):
         os.makedirs("saved_model/")
 
     for episode in range(num_episodes):
+        current_episode = episode + start_episode
         game_state = GameState(1, initial_board())
         done = False
 
@@ -51,10 +52,8 @@ def train_agents(num_episodes, start_episode=0):
                 state, choosen_action, reward, next_state, next_possible_actions
             )
 
-            #display_board(game_state)
-
-        current_episode = episode + start_episode
-        print(f"Épisode {current_episode} terminé.")
+            print(f"Épisode {current_episode}")
+            display_board(game_state)
 
         if episode % 1000 == 0:
             agent1.model.save(f"h5/{current_episode}_agent1.h5")
