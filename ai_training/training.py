@@ -12,12 +12,12 @@ from ai_training.calculate_reward import calculate_reward
 from ai_training.agent import Agent
 
 
-def train_agents(num_episodes=1000):
+def train_agents(num_episodes, start_episode=0):
     agent1 = Agent(
-        name="Agent1", player_role=PlayerRole.PLAYER1, model_path="h5/0_agent1"
+        name="Agent1", player_role=PlayerRole.PLAYER1
     )
     agent2 = Agent(
-        name="Agent2", player_role=PlayerRole.PLAYER2, model_path="h5/0_agent2"
+        name="Agent2", player_role=PlayerRole.PLAYER2
     )
 
     if not os.path.exists("saved_model/"):
@@ -51,12 +51,13 @@ def train_agents(num_episodes=1000):
                 state, choosen_action, reward, next_state, next_possible_actions
             )
 
-            display_board(game_state)
+            #display_board(game_state)
 
-        print(f"Épisode {episode} terminé.")
+        current_episode = episode + start_episode
+        print(f"Épisode {current_episode} terminé.")
 
-        if episode % 10 == 0:
-            agent1.model.save(f"h5/{episode}_agent1.h5")
-            agent2.model.save(f"h5/{episode}_agent2.h5")
+        if episode % 1000 == 0:
+            agent1.model.save(f"h5/{current_episode}_agent1.h5")
+            agent2.model.save(f"h5/{current_episode}_agent2.h5")
 
-            agent2.model.export(f"saved_model/{episode}_agent2")
+            agent2.model.export(f"saved_model/{current_episode}_agent2")

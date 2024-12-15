@@ -13,13 +13,13 @@ from game_logic.actions.pass_turn import pass_turn
 def do_action(matrice, game_state, player):
     action_info = action_matrice_to_action_infos(matrice, game_state)
 
-    print("***************")
-    print(action_info["pawn"].id if action_info["pawn"] is not None else None)
-    print(action_info["action"])
-    print(action_info["position"].col if action_info["position"] is not None else None)
-    print(action_info["position"].row if action_info["position"] is not None else None)
-    print(action_info["orientation"])
-    print("***************")
+    # print("***************")
+    # print(action_info["pawn"].id if action_info["pawn"] is not None else None)
+    # print(action_info["action"])
+    # print(action_info["position"].col if action_info["position"] is not None else None)
+    # print(action_info["position"].row if action_info["position"] is not None else None)
+    # print(action_info["orientation"])
+    # print("***************")
 
     if action_info["action"] == Action.MOVE:
         move_pawn(game_state, player, action_info["pawn"], action_info["position"])

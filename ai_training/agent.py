@@ -4,8 +4,8 @@ import tensorflow as tf
 import numpy as np
 
 LEARNING_RATE = 0.001
-EPSILON = 0.15
-GAMMA = 0.9
+EPSILON = 0.2
+GAMMA = 0.95
 
 
 class Agent:
@@ -14,7 +14,11 @@ class Agent:
         self.player_role = player_role
 
         if model_path and os.path.exists(model_path):
-            self.model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
+            self.model = tf.keras.models.load_model(model_path)
+            self.model.compile(
+                optimizer=tf.keras.optimizers.Adam(learning_rate=LEARNING_RATE),
+                loss=tf.keras.losses.MeanSquaredError(),
+            )
             print(f"Modèle chargé depuis {model_path}")
         else:
             self.model = self.build_model()
@@ -22,7 +26,8 @@ class Agent:
     def build_model(self):
         model = tf.keras.models.Sequential(
             [
-                tf.keras.layers.Dense(128, activation="relu", input_shape=(270,)),
+                tf.keras.layers.Dense(256, activation="relu", input_shape=(270,)),
+                tf.keras.layers.Dense(128, activation="relu"),
                 tf.keras.layers.Dense(64, activation="relu"),
                 tf.keras.layers.Dense(1, activation="linear"),
             ]
