@@ -1,0 +1,7 @@
+services:
+  stratege-ai:
+    build: .
+    volumes:
+      - ./saved_model:/workspace/saved_model
+      - ./h5:/workspace/h5
+    command: python main.py

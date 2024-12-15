@@ -1,6 +1,6 @@
 {
     "name": "AI Training For Starège",
-    "dockerFile": "../Dockerfile",
+    "dockerFile": "./Dockerfile",
     "context": "..",
     "settings": {
         "python.defaultInterpreterPath": "/usr/local/bin/python",
