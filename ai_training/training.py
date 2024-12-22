@@ -12,12 +12,14 @@ from ai_training.calculate_reward import calculate_reward
 from ai_training.agent import Agent
 
 
-def train_agents(num_episodes, start_episode=0):
+def train_agents(
+    num_episodes, start_episode=0, agent1_model_path=None, agent2_model_path=None
+):
     agent1 = Agent(
-        name="Agent1", player_role=PlayerRole.PLAYER1
+        name="Agent1", player_role=PlayerRole.PLAYER1, model_path=agent1_model_path
     )
     agent2 = Agent(
-        name="Agent2", player_role=PlayerRole.PLAYER2
+        name="Agent2", player_role=PlayerRole.PLAYER2, model_path=agent2_model_path
     )
 
     if not os.path.exists("saved_model/"):
