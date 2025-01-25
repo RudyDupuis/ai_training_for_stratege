@@ -16,7 +16,8 @@ REWARD_FOR_PUSH_OPPONENT = 2
 PENALTY_FOR_ROTATE = -5
 REWARD_FOR_VICTORY = 100
 PENALTY_FOR_PASS_TURN = -5
-REWARD_PER_CAPTURED_PAWN = 1
+REWARD_FOR_PASS_TURN = 10
+REWARD_PER_CAPTURED_PAWN = 0.5
 
 
 def calculate_reward(choosen_action, game_state, current_player):
@@ -41,31 +42,57 @@ def calculate_reward(choosen_action, game_state, current_player):
 
     if action_info["action"] == "pass_turn":
         possible_actions = actions_to_actions_matrice(game_state, current_player)
+        print(f"Nombre d'actions possibles: {len(possible_actions)}")
+
         player_pawns = [
             pawn
             for pawn in game_state.board_pawns
             if pawn.owner == current_player and pawn.is_alive
         ]
 
-        ROTATE_AND_PASSTURN_ACTION = (len(player_pawns) * 3) + 1
-        if len(possible_actions) >= ROTATE_AND_PASSTURN_ACTION:
-            reward += PENALTY_FOR_PASS_TURN
-
-        ROTATE_AND_PASSTURN_AND_MOVE_ACTION = (len(player_pawns) * 4) + 1
-        if len(possible_actions) >= ROTATE_AND_PASSTURN_AND_MOVE_ACTION:
-            reward += PENALTY_FOR_PASS_TURN
-
-        ROTATE_AND_PASSTURN_AND_MOVE_AND_PUSH_PULL_ACTION = (len(player_pawns) * 6) + 1
-        if len(possible_actions) >= ROTATE_AND_PASSTURN_AND_MOVE_AND_PUSH_PULL_ACTION:
-            reward += PENALTY_FOR_PASS_TURN * 2
-
-        ROTATE_AND_PASSTURN_AND_MOVE_AND_PUSH_PULL_AND_KILL_ACTION = (
-            len(player_pawns) * 7
+        TWO_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN = (
+            len(player_pawns) * 4
         ) + 1
+
+        FOUR_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN = (
+            len(player_pawns) * 6
+        ) + 1
+
+        SIX_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN = (
+            len(player_pawns) * 8
+        ) + 1
+
         if (
             len(possible_actions)
-            >= ROTATE_AND_PASSTURN_AND_MOVE_AND_PUSH_PULL_AND_KILL_ACTION
+            < TWO_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN
         ):
+            print(
+                f"Seuil 2 actions restantes par pions: {TWO_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN}"
+            )
+            reward += REWARD_FOR_PASS_TURN
+
+        elif (
+            len(possible_actions)
+            < FOUR_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN
+        ):
+            print(
+                f"Seuil 4 actions restantes par pions: {FOUR_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN}"
+            )
+            reward += PENALTY_FOR_PASS_TURN
+
+        elif (
+            len(possible_actions)
+            < SIX_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN
+        ):
+            print(
+                f"Seuil 6 actions restantes par pions: {SIX_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN}"
+            )
+            reward += PENALTY_FOR_PASS_TURN * 2
+
+        else:
+            print(
+                f"Seuil plus de 6 actions restantes par pions: >{SIX_REMAINING_ACTIONS_PER_PAWN_MINUS_ROTATES_AND_PASSTURN}"
+            )
             reward += PENALTY_FOR_PASS_TURN * 4
 
     opponent_pawns = [
